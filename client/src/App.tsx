@@ -1,30 +1,38 @@
-import { fromNullable, none, Option } from 'fp-ts/lib/Option';
+import { fromNullable, none, Option, some } from 'fp-ts/lib/Option';
 import * as React from 'react';
+import { sendFile } from './api';
 import './App.css';
+import { IStats } from './models';
 
 interface IState {
   file: Option<File>;
+  stats: Option<IStats>;
+  error: Option<string>;
 }
 
 class App extends React.Component<any, IState> {
   public state: IState = {
-    file: none
+    error: none,
+    file: none,
+    stats: none
   };
+
   public render() {
     const { file } = this.state;
     return (
       <div className="App">
         <h1 className="App-title">File stats</h1>
         <div>Select a file to upload</div>
-        {file.fold(
-          <input
-            className="App-input"
-            type="file"
-            name="document"
-            onChange={this.onChange}
-          />,
-          f => <div>{`File ${f.name} loaded!`}</div>
-        )}
+        <div className="App-content">
+          {file.fold(
+            <input type="file" name="document" onChange={this.onChange} />,
+            f => <span>{`File ${f.name} loaded!`}</span>
+          )}
+        </div>
+
+        <button disabled={file.isNone()} onClick={this.onSubmit}>
+          Send
+        </button>
       </div>
     );
   }
@@ -32,7 +40,19 @@ class App extends React.Component<any, IState> {
   private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // tslint:disable
     this.setState({
-      file: fromNullable(e.target.files).chain(fs => fromNullable(fs.item(0)))
+      file: fromNullable(e.target.files).chain(fs => fromNullable(fs.item(0))),
+      // reset stats and error on file selection
+      stats: none,
+      error: none
+    });
+  };
+
+  private onSubmit = () => {
+    this.state.file.map(f => {
+      sendFile(f)
+        .map(s => this.setState({ stats: s }))
+        .mapLeft(e => this.setState({ error: some(e.message) }))
+        .run();
     });
   };
 }
