@@ -1,22 +1,40 @@
+import { fromNullable, none, Option } from 'fp-ts/lib/Option';
 import * as React from 'react';
 import './App.css';
 
-import logo from './logo.svg';
+interface IState {
+  file: Option<File>;
+}
 
-class App extends React.Component {
+class App extends React.Component<any, IState> {
+  public state: IState = {
+    file: none
+  };
   public render() {
+    const { file } = this.state;
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
+        <h1 className="App-title">File stats</h1>
+        <div>Select a file to upload</div>
+        {file.fold(
+          <input
+            className="App-input"
+            type="file"
+            name="document"
+            onChange={this.onChange}
+          />,
+          f => <div>{`File ${f.name} loaded!`}</div>
+        )}
       </div>
     );
   }
+
+  private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // tslint:disable
+    this.setState({
+      file: fromNullable(e.target.files).chain(fs => fromNullable(fs.item(0)))
+    });
+  };
 }
 
 export default App;
