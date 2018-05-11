@@ -4,13 +4,18 @@ Simple web service for parsing text files and get words stats.
 
 Run the application should be easy as:
 
-## Server
+## Clone locally
+```
+git clone git@github.com:ascariandrea/words-stats.git
+```
+
+## Run the server
 ```
 cd api
 sbt run
 ```
 
-## Client
+## Run the client
 ```
 cd client
 yarn
