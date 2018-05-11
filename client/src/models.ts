@@ -1,4 +1,4 @@
 export interface IStats {
-  wordsCount: number;
+  totalWords: number;
   words: { [key: string]: number };
 }

@@ -10,14 +10,22 @@ const client = axios.create({
   baseURL: config.baseURL
 });
 
-export const sendFile = (file: File): TaskEither<AxiosError, Option<IStats>> =>
-  new TaskEither(
+export const sendFile = (
+  file: File
+): TaskEither<AxiosError, Option<IStats>> => {
+  const form = new FormData();
+  form.append('doc', file);
+
+  return new TaskEither(
     new Task(() =>
       client
-        .post('/fiileStats', file)
-        .then((r: AxiosResponse<{ data: IStats }>) =>
-          right(fromNullable(r.data.data))
-        )
+        .post('/fileStats', form, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then((r: AxiosResponse<IStats>) => right(fromNullable(r.data)))
         .catch(e => left(e))
     )
   );
+};
