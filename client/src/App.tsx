@@ -18,7 +18,7 @@ class App extends React.Component<any, IState> {
   };
 
   public render() {
-    const { file } = this.state;
+    const { file, stats } = this.state;
     return (
       <div className="App">
         <h1 className="App-title">File stats</h1>
@@ -29,7 +29,27 @@ class App extends React.Component<any, IState> {
             f => <span>{`File ${f.name} loaded!`}</span>
           )}
         </div>
-
+        {stats.fold(null, s => (
+          <table style={{ width: '100%' }}>
+            <thead>Word stats</thead>
+            <tbody>
+              {Object.keys(s.words).map(w => (
+                <tr key={w}>
+                  <td>{w}</td>
+                  <td>{s.words[w]}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>
+                  <b>Total words:</b>
+                </td>
+                <td>{s.totalWords}</td>
+              </tr>
+            </tfoot>
+          </table>
+          ))}
         <button disabled={file.isNone()} onClick={this.onSubmit}>
           Send
         </button>
