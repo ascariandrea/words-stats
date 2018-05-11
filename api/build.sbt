@@ -33,7 +33,8 @@ val root = project.in(file("."))
       "com.typesafe.akka" %% "akka-http"   % "10.1.1",
       "com.typesafe.akka" %% "akka-stream" % "2.5.11",
       "com.typesafe.akka" %% "akka-http-testkit" % "10.1.1",
-      "de.heikoseeberger" %% "akka-http-circe" % "1.20.1"
+      "de.heikoseeberger" %% "akka-http-circe" % "1.20.1",
+      "ch.megard" %% "akka-http-cors" % "0.3.0"
     ) ++ Seq(
       "io.circe" %% "circe-core",
       "io.circe" %% "circe-generic",
